@@ -1,0 +1,399 @@
+{
+	"info": {
+		"_postman_id": "59a4476a-7384-4d6f-8064-17410aaa6864",
+		"name": "TodoListAPIAssessment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23708916"
+	},
+	"item": [
+		{
+			"name": "Create a new todo item",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Confirm POST request to create new item is successful with Status code:201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"pm.test(\"Confirm Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"pm.test(\"Confirm Content-Type header value is application/json\", function () {",
+							"   pm.response.to.have.header(\"Content-Type\");",
+							"   pm.response.to.be.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+							"});",
+							"",
+							"let response = pm.response.json();",
+							"// Store the generated id as enviroment variable",
+							"pm.environment.set(\"id\", response);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function randomString(minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') {",
+							"    if (!minValue) {",
+							"        minValue = 20;",
+							"        maxValue = 20;",
+							"    }",
+							"",
+							"    if (!maxValue) {",
+							"        maxValue = minValue;",
+							"    }",
+							"",
+							"    let length = _.random(minValue, maxValue),",
+							"        randomString = \"\";",
+							"",
+							"    for (let i = 0; i < length; i++)",
+							"        randomString += dataSet.charAt(Math.floor(Math.random() * dataSet.length));",
+							"    return randomString;",
+							"}",
+							"",
+							"pm.variables.set('randomString', randomString());",
+							"pm.environment.set(\"itemName\", randomString());",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": \"{{itemName}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3002/{{todoAPIEndpoint}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"{{todoAPIEndpoint}}"
+					]
+				},
+				"description": "Create a new todo item"
+			},
+			"response": []
+		},
+		{
+			"name": "Create a duplicate todo item [NEG]",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Confirm duplicate item names are rejected with Status code: 409\", function () {",
+							"    pm.response.to.have.status(409);",
+							"});",
+							"pm.test(\"Confirm it gives duplicate error message\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"A todo item with description already exists\");",
+							"});",
+							"pm.test(\"Confirm Content-Type header value is text/plain\", function () {",
+							"   pm.response.to.have.header(\"Content-Type\");",
+							"   pm.response.to.be.header(\"Content-Type\", \"text/plain; charset=utf-8\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// function randomString(minValue, maxValue, dataSet = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ') {",
+							"//     if (!minValue) {",
+							"//         minValue = 20;",
+							"//         maxValue = 20;",
+							"//     }",
+							"",
+							"//     if (!maxValue) {",
+							"//         maxValue = minValue;",
+							"//     }",
+							"",
+							"//     let length = _.random(minValue, maxValue),",
+							"//         randomString = \"\";",
+							"",
+							"//     for (let i = 0; i < length; i++)",
+							"//         randomString += dataSet.charAt(Math.floor(Math.random() * dataSet.length));",
+							"//     return randomString;",
+							"// }",
+							"",
+							"// pm.variables.set('randomString', randomString());",
+							"// pm.environment.set(\"itemName\", randomString());",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"description\": \"{{itemName}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3002/{{todoAPIEndpoint}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"{{todoAPIEndpoint}}"
+					]
+				},
+				"description": "Create a new todo item"
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm the new items is listed in todo item list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Confirm the GET item list request is successful with Status code : 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let response = pm.response.json();",
+							"",
+							"pm.test(\"Confirm the newly created item is listed in the todo item list\", function () {",
+							"for(let jsonData of response){",
+							"    if (jsonData.id ==pm.environment.get(\"id\")){",
+							"        pm.expect(jsonData.description).to.eql(pm.environment.get(\"itemName\"));",
+							"    }",
+							"}",
+							"});",
+							"",
+							"pm.test(\"Confirm Content-Type header value is application/json\", function () {",
+							"   pm.response.to.have.header(\"Content-Type\");",
+							"   pm.response.to.be.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+							"});",
+							"",
+							"pm.test(\"Confirm Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3002/{{todoAPIEndpoint}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"{{todoAPIEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit the item as completed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Confirm the PUT request to edit item detail is successful with Status code : 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});",
+							"pm.test(\"Confirm Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"{{id}}\",\n  \"description\": \"{{itemName}}\",\n  \"isCompleted\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3002/api/todoItems/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"todoItems",
+						"{{id}}"
+					]
+				},
+				"description": "Edit the item details"
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm the item is completed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Confirm the GET item detail is successful with Status code : 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Confirm the todoItem is changed to 'completed' status\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.isCompleted).to.eql(true);",
+							"});",
+							"",
+							"pm.test(\"Confirm Content-Type header value is application/json\", function () {",
+							"   pm.response.to.have.header(\"Content-Type\");",
+							"   pm.response.to.be.header(\"Content-Type\", \"application/json; charset=utf-8\");",
+							"});",
+							"",
+							"pm.test(\"Confirm Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"var schema ={",
+							"    \"$ref\": \"#/definitions/getItem\",",
+							"    \"definitions\": {",
+							"        \"getItem\": {",
+							"            \"type\": \"object\",",
+							"            \"additionalProperties\": false,",
+							"            \"properties\": {",
+							"                \"id\": {",
+							"                    \"type\": \"string\",",
+							"                    \"format\": \"uuid\"",
+							"                },",
+							"                \"description\": {",
+							"                    \"type\": \"string\"",
+							"                },",
+							"                \"isCompleted\": {",
+							"                    \"type\": \"boolean\"",
+							"                }",
+							"            },",
+							"            \"required\": [",
+							"                \"description\",",
+							"                \"id\",",
+							"                \"isCompleted\"",
+							"            ],",
+							"            \"title\": \"getItem\"",
+							"        }",
+							"    }",
+							"",
+							"};",
+							"",
+							"pm.test('Confirm the response Schema is valid and meets the expected standards',function(){",
+							"pm.response.to.have.jsonSchema(schema);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3002/api/todoItems/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"todoItems",
+						"{{id}}"
+					]
+				},
+				"description": "Get item specific details"
+			},
+			"response": []
+		},
+		{
+			"name": "Ensure the list does not have completed items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Confirm the GET list item is successful with Status code : 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Confirm the item list does not have the completed items\", function () {",
+							"    pm.expect(pm.response.text()).not.to.include(pm.environment.get(\"itemName\"));",
+							"});",
+							"",
+							"pm.test(\"Confirm Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3002/{{todoAPIEndpoint}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"{{todoAPIEndpoint}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
