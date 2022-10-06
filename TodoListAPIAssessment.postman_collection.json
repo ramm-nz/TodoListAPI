@@ -75,12 +75,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3002/{{todoAPIEndpoint}}",
-					"protocol": "http",
+					"raw": "{{url}}/{{todoAPIEndpoint}}",
 					"host": [
-						"localhost"
+						"{{url}}"
 					],
-					"port": "3002",
 					"path": [
 						"{{todoAPIEndpoint}}"
 					]
@@ -154,12 +152,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3002/{{todoAPIEndpoint}}",
-					"protocol": "http",
+					"raw": "{{url}}/{{todoAPIEndpoint}}",
 					"host": [
-						"localhost"
+						"{{url}}"
 					],
-					"port": "3002",
 					"path": [
 						"{{todoAPIEndpoint}}"
 					]
@@ -207,12 +203,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3002/{{todoAPIEndpoint}}",
-					"protocol": "http",
+					"raw": "{{url}}/{{todoAPIEndpoint}}",
 					"host": [
-						"localhost"
+						"{{url}}"
 					],
-					"port": "3002",
 					"path": [
 						"{{todoAPIEndpoint}}"
 					]
@@ -251,15 +245,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3002/api/todoItems/{{id}}",
-					"protocol": "http",
+					"raw": "{{url}}/{{todoAPIEndpoint}}/{{id}}",
 					"host": [
-						"localhost"
+						"{{url}}"
 					],
-					"port": "3002",
 					"path": [
-						"api",
-						"todoItems",
+						"{{todoAPIEndpoint}}",
 						"{{id}}"
 					]
 				},
@@ -335,15 +326,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3002/api/todoItems/{{id}}",
-					"protocol": "http",
+					"raw": "{{url}}/{{todoAPIEndpoint}}/{{id}}",
 					"host": [
-						"localhost"
+						"{{url}}"
 					],
-					"port": "3002",
 					"path": [
-						"api",
-						"todoItems",
+						"{{todoAPIEndpoint}}",
 						"{{id}}"
 					]
 				},
@@ -382,12 +370,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3002/{{todoAPIEndpoint}}",
-					"protocol": "http",
+					"raw": "{{url}}/{{todoAPIEndpoint}}",
 					"host": [
-						"localhost"
+						"{{url}}"
 					],
-					"port": "3002",
 					"path": [
 						"{{todoAPIEndpoint}}"
 					]
